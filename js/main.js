@@ -6,6 +6,8 @@
   const btnBackFilters = document.getElementById("btn-back-to-filters");
   const btnBuzzer = document.getElementById("btn-buzzer");
   const btnReveal = document.getElementById("btn-reveal");
+  const btnNext = document.getElementById("btn-next");
+
 
   const scoreBox = document.getElementById("score-box");
   const scoreEl = document.getElementById("score");
@@ -58,16 +60,35 @@
     return result;
   }
   function resetSession(){ score=0; scoreEl.textContent="0"; index=0; current=null; }
-  function renderQuestion(){
-    current = queue[index];
-    qBox.textContent = ""; aBox.textContent = "";
-    aBox.classList.add("hidden");
-    btnReveal.classList.add("hidden");
-    choicesWrap.classList.add("hidden");
-    choiceButtons.forEach(b => { b.textContent=""; b.classList.remove("correct","incorrect"); });
-    scoreBox.classList.toggle("hidden", mode !== "mc");
+  function renderQuestion() {
+  current = queue[index];
+
+  // Reset UI
+  qBox.textContent = "";
+  aBox.textContent = "";
+  aBox.classList.add("hidden");
+
+  // Hide everything by default
+  btnReveal.classList.add("hidden");
+  btnNext.classList.add("hidden");
+  choicesWrap.classList.add("hidden");
+  choiceButtons.forEach(b => { b.textContent = ""; b.classList.remove("correct","incorrect"); });
+
+  // Show score only in MC
+  scoreBox.classList.toggle("hidden", mode !== "mc");
+
+  if (mode === "mc") {
+    // MC mode: use buzzer + reveal-on-buzz
+    btnBuzzer.classList.remove("hidden");
+    Game.startReveal(qBox, current.Question);
+  } else {
+    // Flashcard mode: NO buzzer, show Reveal immediately, still do slow reveal
+    btnBuzzer.classList.add("hidden");
+    btnReveal.classList.remove("hidden");
     Game.startReveal(qBox, current.Question);
   }
+}
+
   function nextQuestion(){ index = (index + 1) % queue.length; renderQuestion(); }
 
   btnLetsGo.addEventListener("click", () => { UI.show("filters"); });
