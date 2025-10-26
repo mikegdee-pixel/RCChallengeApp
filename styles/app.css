@@ -47,7 +47,7 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
 .question-box, .answer-box { background: #fff; min-height: 120px; border-radius: 12px; padding: 16px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
 /* Adjust the question text */
 #question-box {
-  font-size: 1.4rem;       /* roughly 22–23px; adjust to taste */
+  font-size: 1.3rem;       /* roughly 22–23px; adjust to taste */
   font-weight: 700;        /* bold */
   line-height: 1.5;        /* comfortable spacing for multi-line questions */
 }
