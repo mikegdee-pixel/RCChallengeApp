@@ -276,8 +276,18 @@ computeMatches();
 
   // Level checkboxes → show panels + recompute
   [levelNovice, levelJunior, levelSenior].forEach(el => {
-    on(el, "change", () => { updatePanelsVisibility(); computeMatches(); });
+  on(el, "change", () => {
+    updatePanelsVisibility();
+
+    // Auto-toggle both Types for the level that changed
+    if (el === levelNovice)  setTypesForLevel("Novice",  !!levelNovice.checked);
+    if (el === levelJunior)  setTypesForLevel("Junior",  !!levelJunior.checked);
+    if (el === levelSenior)  setTypesForLevel("Senior",  !!levelSenior.checked);
+
+    computeMatches();
   });
+});
+
 
   // Subset checks + page inputs → recompute
   [
