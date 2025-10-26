@@ -7,6 +7,11 @@
   const btnBuzzer = document.getElementById("btn-buzzer");
   const btnReveal = document.getElementById("btn-reveal");
   const btnNext = document.getElementById("btn-next");
+  const screenGame = document.getElementById("screen-game");
+function updateModeClass() {
+  screenGame.classList.toggle("mode-flashcard", mode === "flashcard");
+  screenGame.classList.toggle("mode-mc", mode === "mc");
+}
 
 
   const scoreBox = document.getElementById("score-box");
@@ -76,7 +81,8 @@
 
   // Show score only in MC
   scoreBox.classList.toggle("hidden", mode !== "mc");
-
+  updateModeClass();
+    
   if (mode === "mc") {
     // Multiple Choice: show buzzer, hide reveal/next
     btnBuzzer.classList.remove("hidden");
@@ -102,6 +108,7 @@
     queue = shuffle(matches.slice());
     resetSession();
     mode = Array.from(modeRadios).find(r => r.checked)?.value || "mc";
+    updateModeClass();     
     UI.show("game"); renderQuestion();
   });
   btnBackFilters.addEventListener("click", () => { resetSession(); UI.show("filters"); });
