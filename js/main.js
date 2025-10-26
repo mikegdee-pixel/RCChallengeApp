@@ -159,6 +159,35 @@
     return result;
   }
 
+// Toggle visual selected-state on labels when checkboxes change
+function styleToggleFor(inputEl) {
+  if (!inputEl) return;
+  const label = inputEl.closest("label");
+  if (!label || !label.classList.contains("toggle-btn")) return;
+  label.classList.toggle("selected", !!inputEl.checked);
+}
+
+function initToggleSync() {
+  const toggleInputs = [
+    // Levels
+    levelNovice, levelJunior, levelSenior,
+    // Novice
+    noviceToss, noviceBonus,
+    // Junior
+    juniorToss, juniorBonus,
+    // Senior
+    seniorToss, seniorBonus
+  ].filter(Boolean);
+
+  // Initial paint
+  toggleInputs.forEach(styleToggleFor);
+
+  // Keep in sync on change
+  toggleInputs.forEach(el => {
+    el.addEventListener("change", () => styleToggleFor(el));
+  });
+}
+  
   function renderQuestion() {
     if (!queue.length) return;
     current = queue[index];
@@ -211,8 +240,10 @@
     if (matchCount) matchCount.textContent = "Select levels/subsets to see matches.";
     if (btnStart) btnStart.disabled = true;
 
-    updatePanelsVisibility();
-    computeMatches();
+updatePanelsVisibility();
+computeMatches();
+initToggleSync();  
+    
   } catch (e) {
     if (matchCount) matchCount.textContent = "Could not load questions.csv";
   }
