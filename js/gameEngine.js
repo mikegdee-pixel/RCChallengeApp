@@ -1,6 +1,6 @@
 // gameEngine.js
 window.Game = (function () {
-  const REVEAL_DELAY_MS = 40;
+  const REVEAL_DELAY_MS = 70;  //Adjust text reveal speed.  High number is slower.
   let revealTimer = null;
   let fullyDisplayed = false;
   let interrupted = false;
