@@ -1,4 +1,5 @@
-const CACHE = "rc-trivia-v2";
+const CACHE = "rc-trivia-v10";
+
 
 const ASSETS = [
   "./index.html",
