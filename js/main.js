@@ -108,6 +108,20 @@
     return "";
   }
 
+function setTypesForLevel(level, isChecked) {
+  if (level === "Novice") {
+    if (noviceToss)  { noviceToss.checked  = isChecked; styleToggleFor(noviceToss); }
+    if (noviceBonus) { noviceBonus.checked = isChecked; styleToggleFor(noviceBonus); }
+  } else if (level === "Junior") {
+    if (juniorToss)  { juniorToss.checked  = isChecked; styleToggleFor(juniorToss); }
+    if (juniorBonus) { juniorBonus.checked = isChecked; styleToggleFor(juniorBonus); }
+  } else if (level === "Senior") {
+    if (seniorToss)  { seniorToss.checked  = isChecked; styleToggleFor(seniorToss); }
+    if (seniorBonus) { seniorBonus.checked = isChecked; styleToggleFor(seniorBonus); }
+  }
+}
+
+  
   function readSelections() {
     const sel = [];
     function pushSubset(level, type, checked, pagesInput) {
@@ -242,7 +256,14 @@ function initToggleSync() {
 
 updatePanelsVisibility();
 computeMatches();
-initToggleSync();  
+initToggleSync();
+// Enforce the initial rule: when a level is selected, both its Types are selected
+setTypesForLevel("Novice", !!levelNovice.checked);
+setTypesForLevel("Junior", !!levelJunior.checked);
+setTypesForLevel("Senior", !!levelSenior.checked);
+computeMatches();
+
+    
     
   } catch (e) {
     if (matchCount) matchCount.textContent = "Could not load questions.csv";
