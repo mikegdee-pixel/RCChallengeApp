@@ -13,11 +13,11 @@
   const scoreEl = document.getElementById("score");
   const matchCount = document.getElementById("match-count");
 
-  const levelSelect = document.getElementById("level-select");
-  const pageInput = document.getElementById("page-input");
+//const levelSelect = document.getElementById("level-select");
+//const pageInput = document.getElementById("page-input");
   const pageHint = document.getElementById("page-hint");
-  const typeToss = document.getElementById("type-tossup");
-  const typeBonus = document.getElementById("type-bonus");
+//const typeToss = document.getElementById("type-tossup");
+//const typeBonus = document.getElementById("type-bonus");
   const modeRadios = document.querySelectorAll("input[name='mode']");
 
   const qBox = document.getElementById("question-box");
@@ -25,6 +25,41 @@
   const choicesWrap = document.getElementById("choices");
   const choiceButtons = Array.from(document.querySelectorAll(".choice"));
   const screenGame = document.getElementById("screen-game");
+
+  // Level checkboxes
+const levelNovice = document.getElementById("level-novice");
+const levelJunior = document.getElementById("level-junior");
+const levelSenior = document.getElementById("level-senior");
+
+// Panels per level
+const panelNovice = document.getElementById("panel-novice");
+const panelJunior = document.getElementById("panel-junior");
+const panelSenior = document.getElementById("panel-senior");
+
+// Subset toggles + page inputs (Novice)
+const noviceToss = document.getElementById("novice-tossup");
+const noviceBonus = document.getElementById("novice-bonus");
+const noviceTossPages = document.getElementById("novice-tossup-pages");
+const noviceBonusPages = document.getElementById("novice-bonus-pages");
+const hintNoviceToss = document.getElementById("hint-novice-tossup");
+const hintNoviceBonus = document.getElementById("hint-novice-bonus");
+
+// (Junior)
+const juniorToss = document.getElementById("junior-tossup");
+const juniorBonus = document.getElementById("junior-bonus");
+const juniorTossPages = document.getElementById("junior-tossup-pages");
+const juniorBonusPages = document.getElementById("junior-bonus-pages");
+const hintJuniorToss = document.getElementById("hint-junior-tossup");
+const hintJuniorBonus = document.getElementById("hint-junior-bonus");
+
+// (Senior)
+const seniorToss = document.getElementById("senior-tossup");
+const seniorBonus = document.getElementById("senior-bonus");
+const seniorTossPages = document.getElementById("senior-tossup-pages");
+const seniorBonusPages = document.getElementById("senior-bonus-pages");
+const hintSeniorToss = document.getElementById("hint-senior-tossup");
+const hintSeniorBonus = document.getElementById("hint-senior-bonus");
+
 
   // --- State ---
   let data = [];
@@ -57,6 +92,13 @@
     answered = false;
   }
 
+  function updatePanelsVisibility() {
+  panelNovice.style.display = levelNovice.checked ? "block" : "none";
+  panelJunior.style.display = levelJunior.checked ? "block" : "none";
+  panelSenior.style.display = levelSenior.checked ? "block" : "none";
+}
+
+  
   // --- PWA SW registration ---
   if ("serviceWorker" in navigator) {
     try { navigator.serviceWorker.register("pwa/service-worker.js"); } catch {}
@@ -75,23 +117,60 @@
     matchCount.textContent = "Could not load questions.csv";
   }
 
+  // Build page hints per Level+Type (each PDF starts at page 1)
+function pageHint(level, type) {
+  const subsetPages = Array.from(new Set(
+    data.filter(r => r.Level === level && r.Type === type).map(r => r.Page)
+  )).sort((a,b) => a-b);
+  if (subsetPages.length) return `Pages available: ${subsetPages[0]} to ${subsetPages[subsetPages.length - 1]}`;
+  return "";
+}
+
+// After data loads:
+hintNoviceToss.textContent = pageHint("Novice", "Toss-up");
+hintNoviceBonus.textContent = pageHint("Novice", "Bonus");
+hintJuniorToss.textContent = pageHint("Junior", "Toss-up");
+hintJuniorBonus.textContent = pageHint("Junior", "Bonus");
+hintSeniorToss.textContent = pageHint("Senior", "Toss-up");
+hintSeniorBonus.textContent = pageHint("Senior", "Bonus");
+
+updatePanelsVisibility();
+computeMatches();
+
+
   function computeMatches() {
-    const level = levelSelect.value;
-    const pageList = Filters.parsePageRanges(pageInput.value);
-    const wantTypes = new Set([
-      ...(typeToss.checked ? ["Toss-up"] : []),
-      ...(typeBonus.checked ? ["Bonus"] : []),
-    ]);
+  const selections = readSelections();
+  let result = [];
 
-    let result = data.filter(r => !!r.ID);
-    if (level) result = result.filter(r => r.Level === level);
-    if (pageList.length) result = result.filter(r => pageList.includes(r.Page));
-    if (wantTypes.size) result = result.filter(r => wantTypes.has(r.Type));
-
-    matchCount.textContent = `${result.length} matching questions`;
-    btnStart.disabled = result.length === 0 || !level;
+  // If nothing selected, disable Start
+  if (selections.length === 0) {
+    matchCount.textContent = "0 matching questions";
+    btnStart.disabled = true;
     return result;
   }
+
+  // Gather matches for each selected subset
+  for (const sel of selections) {
+    const { level, type, pages } = sel;
+    let subset = data.filter(r => r.Level === level && r.Type === type);
+    if (pages.length) subset = subset.filter(r => pages.includes(r.Page));
+    result = result.concat(subset);
+  }
+
+  // De-duplicate by ID (in case any overlap ever happens)
+  const seen = new Set();
+  result = result.filter(r => {
+    if (seen.has(r.ID)) return false;
+    seen.add(r.ID);
+    return true;
+  });
+
+  matchCount.textContent = `${result.length} matching questions`;
+  btnStart.disabled = result.length === 0;
+
+  return result;
+}
+
 
   function renderQuestion() {
     current = queue[index];
@@ -133,24 +212,37 @@
   btnLetsGo.addEventListener("click", () => { UI.show("filters"); });
   btnBackStart.addEventListener("click", () => { UI.show("start"); });
 
-  [levelSelect, pageInput, typeToss, typeBonus].forEach(el => {
-    el.addEventListener("input", computeMatches);
-    el.addEventListener("change", computeMatches);
-  });
-  modeRadios.forEach(r => r.addEventListener("change", () => {
-    mode = Array.from(modeRadios).find(r => r.checked)?.value || "mc";
-    computeMatches();
-  }));
+ // Level checkbox changes
+[levelNovice, levelJunior, levelSenior].forEach(el => {
+  el.addEventListener("change", () => { updatePanelsVisibility(); computeMatches(); });
+});
 
-  btnStart.addEventListener("click", () => {
-    const matches = computeMatches();
-    queue = shuffle(matches.slice());
-    resetSession();
-    mode = Array.from(modeRadios).find(r => r.checked)?.value || "mc";
-    updateModeClass();
-    UI.show("game");
-    renderQuestion();
-  });
+// Subset checkboxes + page inputs
+[
+  noviceToss, noviceBonus, juniorToss, juniorBonus, seniorToss, seniorBonus,
+  noviceTossPages, noviceBonusPages, juniorTossPages, juniorBonusPages, seniorTossPages, seniorBonusPages
+].forEach(el => {
+  el.addEventListener("input", computeMatches);
+  el.addEventListener("change", computeMatches);
+});
+
+// Mode radios stay the same (already in your file)
+modeRadios.forEach(r => r.addEventListener("change", () => {
+  mode = Array.from(modeRadios).find(r => r.checked)?.value || "mc";
+  computeMatches();
+}));
+
+
+btnStart.addEventListener("click", () => {
+  const matches = computeMatches();
+  queue = shuffle(matches.slice());
+  resetSession();
+  mode = Array.from(modeRadios).find(r => r.checked)?.value || "mc";
+  updateModeClass && updateModeClass();
+  UI.show("game");
+  renderQuestion();
+});
+
 
   btnBackFilters.addEventListener("click", () => {
     resetSession();
@@ -224,3 +316,29 @@
   UI.show("start");
   computeMatches();
 })();
+
+function readSelections() {
+  const selections = [];
+
+  function pushSubset(level, type, checked, pagesInput) {
+    if (!checked) return;
+    const pages = Filters.parsePageRanges(pagesInput.value); // [] means "all"
+    selections.push({ level, type, pages });
+  }
+
+  if (levelNovice.checked) {
+    pushSubset("Novice", "Toss-up", noviceToss.checked, noviceTossPages);
+    pushSubset("Novice", "Bonus",   noviceBonus.checked, noviceBonusPages);
+  }
+  if (levelJunior.checked) {
+    pushSubset("Junior", "Toss-up", juniorToss.checked, juniorTossPages);
+    pushSubset("Junior", "Bonus",   juniorBonus.checked, juniorBonusPages);
+  }
+  if (levelSenior.checked) {
+    pushSubset("Senior", "Toss-up", seniorToss.checked, seniorTossPages);
+    pushSubset("Senior", "Bonus",   seniorBonus.checked, seniorBonusPages);
+  }
+
+  return selections;
+}
+
