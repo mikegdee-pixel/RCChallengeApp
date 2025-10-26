@@ -68,7 +68,7 @@
   aBox.textContent = "";
   aBox.classList.add("hidden");
 
-  // Hide everything by default
+  // Hide all action bits first
   btnReveal.classList.add("hidden");
   btnNext.classList.add("hidden");
   choicesWrap.classList.add("hidden");
@@ -78,16 +78,17 @@
   scoreBox.classList.toggle("hidden", mode !== "mc");
 
   if (mode === "mc") {
-    // MC mode: use buzzer + reveal-on-buzz
+    // Multiple Choice: show buzzer, hide reveal/next
     btnBuzzer.classList.remove("hidden");
     Game.startReveal(qBox, current.Question);
   } else {
-    // Flashcard mode: NO buzzer, show Reveal immediately, still do slow reveal
+    // Flashcard: NO buzzer; show Reveal immediately
     btnBuzzer.classList.add("hidden");
     btnReveal.classList.remove("hidden");
     Game.startReveal(qBox, current.Question);
   }
 }
+
 
   function nextQuestion(){ index = (index + 1) % queue.length; renderQuestion(); }
 
@@ -116,19 +117,19 @@
     }
   });
  btnReveal.addEventListener("click", () => {
-  // Always stop the reveal when showing the answer
+  // Stop the reveal, show the answer
   Game.stopReveal();
   aBox.textContent = current.Answer;
   aBox.classList.remove("hidden");
 
   if (mode === "mc") {
-    // MC mode: currently we show answer briefly and auto-advance elsewhere (after picking).
-    // No change needed here; reveal in MC is only used after picking.
+    // In MC mode, Reveal is only used after picking; do nothing special here
   } else {
-    // FLASHCARD: Show the Next button and wait for user to proceed
+    // FLASHCARD: show Next and wait for user click
     btnNext.classList.remove("hidden");
   }
 });
+
   btnNext.addEventListener("click", () => {
   nextQuestion();
 });
@@ -144,7 +145,7 @@
       if (picked === correct) { score += 10; btn.classList.add("correct"); }
       else { if (!fully && interrupted) score -= 5; btn.classList.add("incorrect"); const cbtn = choiceButtons.find(b => b.getAttribute("data-letter") === correct); if (cbtn) cbtn.classList.add("correct"); }
       scoreEl.textContent = String(score);
-      aBox.textContent = current.Answer; aBox.classList.remove("hidden"); setTimeout(nextQuestion, 1200);
+      aBox.textContent = current.Answer; aBox.classList.remove("hidden");
     });
   });
   UI.show("start"); computeMatches();
