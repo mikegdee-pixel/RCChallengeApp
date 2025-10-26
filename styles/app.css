@@ -49,3 +49,8 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
 .choice { background: #fff; color: #111; border: 1px solid #ddd; }
 .choice.correct { border-color: #22a06b; }
 .choice.incorrect { border-color: #e82d4b; }
+
+/* Hide MC choices when in Flashcard mode */
+#screen-game.mode-flashcard #choices {
+  display: none !important;
+}
