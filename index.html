@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="manifest" href="pwa/manifest.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+  <title>RC Challenge Trivia</title>
+  <link rel="stylesheet" href="styles/app.css" />
+</head>
+<body>
+  <div id="app">
+    <section id="screen-start" class="screen active">
+      <h1>RC Challenge Trivia</h1>
+      <button id="btn-letsgo">Let's go</button>
+      <p class="hint">Tip: Add this to your home screen later to use offline.</p>
+    </section>
+
+    <section id="screen-filters" class="screen">
+      <h2>Choose Your Practice</h2>
+      <div class="card">
+        <label>Level</label>
+        <select id="level-select">
+          <option value="">-- choose --</option>
+          <option value="Novice">Novice</option>
+        </select>
+      </div>
+
+      <div class="card">
+        <label>Pages (e.g., 1-5,7,10-12)</label>
+        <input id="page-input" placeholder="1-5,7,10-12" />
+        <small id="page-hint" class="muted"></small>
+      </div>
+
+      <div class="card">
+        <label>Type</label>
+        <div class="toggle-row">
+          <label><input type="checkbox" id="type-tossup" checked /> Toss-up</label>
+          <label><input type="checkbox" id="type-bonus" /> Bonus</label>
+        </div>
+      </div>
+
+      <div class="card">
+        <label>Mode</label>
+        <div class="toggle-row">
+          <label><input type="radio" name="mode" value="mc" checked /> Multiple Choice</label>
+          <label><input type="radio" name="mode" value="flashcard" /> Flashcard</label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btn-start" disabled>Start</button>
+        <span id="match-count" class="muted">Loading questions…</span>
+      </div>
+      <button id="btn-back-to-start" class="link">Back</button>
+    </section>
+
+    <section id="screen-game" class="screen">
+      <div class="topbar">
+        <button id="btn-back-to-filters" class="link">&larr; Back</button>
+        <div id="score-box" class="score hidden">Score: <span id="score">0</span></div>
+      </div>
+
+      <div id="question-box" class="question-box"></div>
+
+      <div class="actions">
+        <button id="btn-buzzer" class="buzzer">BUZZER</button>
+        <button id="btn-reveal" class="hidden">Reveal Answer</button>
+      </div>
+
+      <div id="choices" class="choices hidden">
+        <button class="choice" data-letter="A"></button>
+        <button class="choice" data-letter="B"></button>
+        <button class="choice" data-letter="C"></button>
+        <button class="choice" data-letter="D"></button>
+      </div>
+
+      <div id="answer-box" class="answer-box hidden"></div>
+    </section>
+  </div>
+
+  <script src="js/dataLoader.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/gameEngine.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
