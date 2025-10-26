@@ -11,6 +11,32 @@ input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radiu
 .toggle-row { display: flex; gap: 18px; align-items: center; }
 .actions { display: flex; gap: 12px; align-items: center; margin-top: 10px; }
 button { padding: 12px 18px; border: none; border-radius: 12px; background: #2f6fed; color: #fff; cursor: pointer; }
+/* Make the "Next Question" button green */
+#btn-next {
+  background: #22a06b;        /* pleasant green tone */
+  color: white;
+  font-weight: 600;
+}
+
+/* Optional: darker on hover */
+#btn-next:hover {
+  background: #1a7e54;
+}
+/* Push the Next Question button to the right side */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* Align Next button to the right edge */
+#btn-next {
+  margin-left: auto;  /* pushes it to the far right */
+}
+
+
 button:disabled { background: #a9baf3; cursor: not-allowed; }
 button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
 .buzzer { background: #e82d4b; font-weight: 800; letter-spacing: 1px; }
