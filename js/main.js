@@ -120,7 +120,7 @@
     } else {
       btnBuzzer.classList.add("hidden");
       btnReveal.classList.remove("hidden");
-      Game.startReveal(qBox, current.Question);
+      Game.revealInstant(qBox, current.Question);
     }
   }
 
