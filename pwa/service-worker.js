@@ -1,4 +1,5 @@
-const CACHE = "rc-trivia-v1";
+const CACHE = "rc-trivia-v2";
+
 const ASSETS = [
   "./index.html",
   "./styles/app.css",
@@ -17,3 +18,5 @@ self.addEventListener("fetch", (e) => {
     }).catch(() => res))
   );
 });
+self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
