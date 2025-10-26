@@ -45,6 +45,11 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
 .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .score { font-weight: 700; }
 .question-box, .answer-box { background: #fff; min-height: 120px; border-radius: 12px; padding: 16px; box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+/* Add space above the answer box so it doesn't feel squished */
+#answer-box {
+  margin-top: 24px;   /* adjust to taste: 16px is subtle, 24px is comfy, 32px is roomy */
+}
+
 /* Adjust the question text */
 #question-box {
   font-size: 1.3rem;       /* roughly 22–23px; adjust to taste */
