@@ -36,6 +36,8 @@ function updateModeClass() {
   let score = 0;
   let mode = "mc";
   let current = null;
+  let answered = false; // MC: prevents double-clicks and controls Next button
+
 
   if ("serviceWorker" in navigator) {
     try { navigator.serviceWorker.register("pwa/service-worker.js"); } catch {}
@@ -65,7 +67,8 @@ function updateModeClass() {
     return result;
   }
   function resetSession(){ score=0; scoreEl.textContent="0"; index=0; current=null; }
-  function renderQuestion() {
+  
+ function renderQuestion() {
   current = queue[index];
 
   // Reset UI
@@ -77,23 +80,41 @@ function updateModeClass() {
   btnReveal.classList.add("hidden");
   btnNext.classList.add("hidden");
   choicesWrap.classList.add("hidden");
-  choiceButtons.forEach(b => { b.textContent = ""; b.classList.remove("correct","incorrect"); });
+   
+  choiceButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (!current || mode !== "mc" || answered) return; // block double scoring
+    answered = true;
 
-  // Show score only in MC
-  scoreBox.classList.toggle("hidden", mode !== "mc");
-  updateModeClass();
-    
-  if (mode === "mc") {
-    // Multiple Choice: show buzzer, hide reveal/next
-    btnBuzzer.classList.remove("hidden");
-    Game.startReveal(qBox, current.Question);
-  } else {
-    // Flashcard: NO buzzer; show Reveal immediately
-    btnBuzzer.classList.add("hidden");
-    btnReveal.classList.remove("hidden");
-    Game.startReveal(qBox, current.Question);
-  }
-}
+    const picked = btn.getAttribute("data-letter");
+    const correct = current.CorrectOption || "A";
+    const interrupted = Game.wasInterrupted();
+    const fully = Game.isFullyDisplayed();
+
+    // Score logic
+    if (picked === correct) {
+      score += 10;
+      btn.classList.add("correct");
+    } else {
+      if (!fully && interrupted) score -= 5;  // -5 only if buzzed early
+      btn.classList.add("incorrect");
+      const correctBtn = choiceButtons.find(b => b.getAttribute("data-letter") === correct);
+      if (correctBtn) correctBtn.classList.add("correct");
+    }
+    scoreEl.textContent = String(score);
+
+    // Lock the choices so user can't change answer
+    choiceButtons.forEach(b => b.disabled = true);
+
+    // Show the answer text
+    aBox.textContent = current.Answer;
+    aBox.classList.remove("hidden");
+
+    // IMPORTANT: No setTimeout here — manual progression only
+    btnNext.classList.remove("hidden");
+  });
+});
+
 
 
   function nextQuestion(){ index = (index + 1) % queue.length; renderQuestion(); }
