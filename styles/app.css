@@ -18,14 +18,20 @@ button { padding: 12px 18px; border: none; border-radius: 12px; background: #2f6
   font-weight: 600;
 }
 
-/* Center the start screen vertically and horizontally */
-#screen-start {
-  display: flex;
+/* Default: screens are hidden (already in your file) */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* Start screen: hidden by default, flex ONLY when active */
+#screen-start { display: none; }  /* make extra sure it starts hidden */
+#screen-start.screen.active {
+  display: flex;                  /* show as flex WHEN active */
   justify-content: center;
   align-items: center;
-  height: 100vh;             /* fill the whole screen */
+  height: 100vh;
   text-align: center;
 }
+
 
 /* Make sure content stacks vertically */
 .start-content {
