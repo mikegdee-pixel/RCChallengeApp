@@ -137,3 +137,40 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
   .subset-grid { grid-template-columns: 1fr; }
 }
 
+/* Toggle button styling for checkbox labels */
+.toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid #d6daf1;
+  background: #eef2ff;         /* light */
+  color: #2b3a67;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.toggle-btn:hover {
+  border-color: #b9c1ef;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+/* Hide the raw checkbox visually (still clickable via label) */
+.toggle-btn > input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Selected state (dark) */
+.toggle-btn.selected {
+  background: #2f6fed;         /* app blue */
+  color: #ffffff;
+  border-color: #2f6fed;
+}
+
+/* Optional: a darker alt for “Bonus” when selected (keep or remove) */
+.subset-check.toggle-btn.selected {
+  background: #475569;         /* slate-ish */
+  border-color: #475569;
+}
