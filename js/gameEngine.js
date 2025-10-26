@@ -23,10 +23,20 @@ window.Game = (function () {
     }
     tick();
   }
+
+ function revealInstant(el, text) {
+    stopReveal();
+    el.textContent = text;
+    fullyDisplayed = true;
+    interrupted = false;
+  }
+  
   function stopReveal() { if (revealTimer) clearTimeout(revealTimer); revealTimer = null; }
   function markInterrupted() { if (!fullyDisplayed) interrupted = true; }
   function wasInterrupted() { return interrupted; }
   function isFullyDisplayed() { return fullyDisplayed; }
 
-  return { startReveal, stopReveal, markInterrupted, wasInterrupted, isFullyDisplayed };
+
+  
+  return { startReveal, revealInstant, stopReveal, markInterrupted, wasInterrupted, isFullyDisplayed };
 })();
