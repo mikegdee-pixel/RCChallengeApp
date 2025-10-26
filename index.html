@@ -55,28 +55,32 @@
       <button id="btn-back-to-start" class="link">Back</button>
     </section>
 
-    <section id="screen-game" class="screen">
-      <div class="topbar">
-        <button id="btn-back-to-filters" class="link">&larr; Back</button>
-        <div id="score-box" class="score hidden">Score: <span id="score">0</span></div>
-      </div>
+    <!-- Game Screen -->
+<section id="screen-game" class="screen">
+  <div class="topbar">
+    <button id="btn-back-to-filters" class="link">&larr; Back</button>
+    <div id="score-box" class="score hidden">Score: <span id="score">0</span></div>
+  </div>
 
-      <div id="question-box" class="question-box"></div>
+  <div id="question-box" class="question-box"></div>
 
-      <div class="actions">
-        <button id="btn-buzzer" class="buzzer">BUZZER</button>
-        <button id="btn-reveal" class="hidden">Reveal Answer</button>
-      </div>
+  <div class="actions">
+    <button id="btn-buzzer" class="buzzer">BUZZER</button>
+    <button id="btn-reveal" class="hidden">Reveal Answer</button>
+    <!-- NEW: Next Question (Flashcard mode) -->
+    <button id="btn-next" class="hidden">Next Question</button>
+  </div>
 
-      <div id="choices" class="choices hidden">
-        <button class="choice" data-letter="A"></button>
-        <button class="choice" data-letter="B"></button>
-        <button class="choice" data-letter="C"></button>
-        <button class="choice" data-letter="D"></button>
-      </div>
+  <div id="choices" class="choices hidden">
+    <button class="choice" data-letter="A"></button>
+    <button class="choice" data-letter="B"></button>
+    <button class="choice" data-letter="C"></button>
+    <button class="choice" data-letter="D"></button>
+  </div>
 
-      <div id="answer-box" class="answer-box hidden"></div>
-    </section>
+  <div id="answer-box" class="answer-box hidden"></div>
+</section>
+
   </div>
 
   <script src="js/dataLoader.js"></script>
