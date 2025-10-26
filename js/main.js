@@ -115,7 +115,25 @@
       btnReveal.classList.remove("hidden");
     }
   });
-  btnReveal.addEventListener("click", () => { aBox.textContent = current.Answer; aBox.classList.remove("hidden"); setTimeout(nextQuestion, 1200); });
+ btnReveal.addEventListener("click", () => {
+  // Always stop the reveal when showing the answer
+  Game.stopReveal();
+  aBox.textContent = current.Answer;
+  aBox.classList.remove("hidden");
+
+  if (mode === "mc") {
+    // MC mode: currently we show answer briefly and auto-advance elsewhere (after picking).
+    // No change needed here; reveal in MC is only used after picking.
+  } else {
+    // FLASHCARD: Show the Next button and wait for user to proceed
+    btnNext.classList.remove("hidden");
+  }
+});
+  btnNext.addEventListener("click", () => {
+  nextQuestion();
+});
+
+
   choiceButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       if (!current || mode !== "mc") return;
