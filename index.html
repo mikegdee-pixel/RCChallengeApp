@@ -27,10 +27,11 @@
   <div class="card">
     <label>Levels (select one or more)</label>
     <div class="level-row">
-      <label><input type="checkbox" id="level-novice" /> Novice</label>
-      <label><input type="checkbox" id="level-junior" /> Junior</label>
-      <label><input type="checkbox" id="level-senior" /> Senior</label>
+      <label class="toggle-btn"><input type="checkbox" id="level-novice" /> Novice</label>
+      <label class="toggle-btn"><input type="checkbox" id="level-junior" /> Junior</label>
+      <label class="toggle-btn"><input type="checkbox" id="level-senior" /> Senior</label>
     </div>
+
   </div>
 
   <!-- B. Subsets for each selected level -->
@@ -39,14 +40,14 @@
     <div class="subset-header">Novice</div>
     <div class="subset-grid">
       <div class="subset-col">
-        <label class="subset-check"><input type="checkbox" id="novice-tossup" /> Toss-up</label>
+        <label class="toggle-btn subset-check"><input type="checkbox" id="novice-tossup" /> Toss-up</label>
         <div class="range-inline">
           <input id="novice-tossup-pages" placeholder="pages (e.g., 1-5,7,10-12)" />
           <small class="muted" id="hint-novice-tossup"></small>
         </div>
       </div>
       <div class="subset-col">
-        <label class="subset-check"><input type="checkbox" id="novice-bonus" /> Bonus</label>
+        <label class="toggle-btn subset-check"><input type="checkbox" id="novice-bonus" /> Bonus</label>
         <div class="range-inline">
           <input id="novice-bonus-pages" placeholder="pages (leave blank for all)" />
           <small class="muted" id="hint-novice-bonus"></small>
@@ -60,14 +61,14 @@
     <div class="subset-header">Junior</div>
     <div class="subset-grid">
       <div class="subset-col">
-        <label class="subset-check"><input type="checkbox" id="junior-tossup" /> Toss-up</label>
+        <label class="toggle-btn subset-check"><input type="checkbox" id="junior-tossup" /> Toss-up</label>
         <div class="range-inline">
           <input id="junior-tossup-pages" placeholder="pages (e.g., 1-5,7,10-12)" />
           <small class="muted" id="hint-junior-tossup"></small>
         </div>
       </div>
       <div class="subset-col">
-        <label class="subset-check"><input type="checkbox" id="junior-bonus" /> Bonus</label>
+        <label class="toggle-btn subset-check"><input type="checkbox" id="junior-bonus" /> Bonus</label>
         <div class="range-inline">
           <input id="junior-bonus-pages" placeholder="pages (leave blank for all)" />
           <small class="muted" id="hint-junior-bonus"></small>
@@ -81,14 +82,14 @@
     <div class="subset-header">Senior</div>
     <div class="subset-grid">
       <div class="subset-col">
-        <label class="subset-check"><input type="checkbox" id="senior-tossup" /> Toss-up</label>
+        <label class="toggle-btn subset-check"><input type="checkbox" id="senior-tossup" /> Toss-up</label>
         <div class="range-inline">
           <input id="senior-tossup-pages" placeholder="pages (e.g., 1-5,7,10-12)" />
           <small class="muted" id="hint-senior-tossup"></small>
         </div>
       </div>
       <div class="subset-col">
-        <label class="subset-check"><input type="checkbox" id="senior-bonus" /> Bonus</label>
+        <label class="toggle-btn subset-check"><input type="checkbox" id="senior-bonus" /> Bonus</label>
         <div class="range-inline">
           <input id="senior-bonus-pages" placeholder="pages (leave blank for all)" />
           <small class="muted" id="hint-senior-bonus"></small>
