@@ -19,44 +19,100 @@
     </section>
 
 
-    <section id="screen-filters" class="screen">
-      <h2>Choose Your Practice</h2>
-      <div class="card">
-        <label>Level</label>
-        <select id="level-select">
-          <option value="">-- choose --</option>
-          <option value="Novice">Novice</option>
-        </select>
-      </div>
+   <!-- Filters Screen -->
+<section id="screen-filters" class="screen">
+  <h2>Choose Your Practice</h2>
 
-      <div class="card">
-        <label>Pages (e.g., 1-5,7,10-12)</label>
-        <input id="page-input" placeholder="1-5,7,10-12" />
-        <small id="page-hint" class="muted"></small>
-      </div>
+  <!-- A. Levels -->
+  <div class="card">
+    <label>Levels (select one or more)</label>
+    <div class="level-row">
+      <label><input type="checkbox" id="level-novice" /> Novice</label>
+      <label><input type="checkbox" id="level-junior" /> Junior</label>
+      <label><input type="checkbox" id="level-senior" /> Senior</label>
+    </div>
+  </div>
 
-      <div class="card">
-        <label>Type</label>
-        <div class="toggle-row">
-          <label><input type="checkbox" id="type-tossup" checked /> Toss-up</label>
-          <label><input type="checkbox" id="type-bonus" /> Bonus</label>
+  <!-- B. Subsets for each selected level -->
+  <!-- Novice -->
+  <div class="card subset-panel" id="panel-novice">
+    <div class="subset-header">Novice</div>
+    <div class="subset-grid">
+      <div class="subset-col">
+        <label class="subset-check"><input type="checkbox" id="novice-tossup" /> Toss-up</label>
+        <div class="range-inline">
+          <input id="novice-tossup-pages" placeholder="pages (e.g., 1-5,7,10-12)" />
+          <small class="muted" id="hint-novice-tossup"></small>
         </div>
       </div>
-
-      <div class="card">
-        <label>Mode</label>
-        <div class="toggle-row">
-          <label><input type="radio" name="mode" value="mc" checked /> Multiple Choice</label>
-          <label><input type="radio" name="mode" value="flashcard" /> Flashcard</label>
+      <div class="subset-col">
+        <label class="subset-check"><input type="checkbox" id="novice-bonus" /> Bonus</label>
+        <div class="range-inline">
+          <input id="novice-bonus-pages" placeholder="pages (leave blank for all)" />
+          <small class="muted" id="hint-novice-bonus"></small>
         </div>
       </div>
+    </div>
+  </div>
 
-      <div class="actions">
-        <button id="btn-start" disabled>Start</button>
-        <span id="match-count" class="muted">Loading questions…</span>
+  <!-- Junior -->
+  <div class="card subset-panel" id="panel-junior">
+    <div class="subset-header">Junior</div>
+    <div class="subset-grid">
+      <div class="subset-col">
+        <label class="subset-check"><input type="checkbox" id="junior-tossup" /> Toss-up</label>
+        <div class="range-inline">
+          <input id="junior-tossup-pages" placeholder="pages (e.g., 1-5,7,10-12)" />
+          <small class="muted" id="hint-junior-tossup"></small>
+        </div>
       </div>
-      <button id="btn-back-to-start" class="link">Back</button>
-    </section>
+      <div class="subset-col">
+        <label class="subset-check"><input type="checkbox" id="junior-bonus" /> Bonus</label>
+        <div class="range-inline">
+          <input id="junior-bonus-pages" placeholder="pages (leave blank for all)" />
+          <small class="muted" id="hint-junior-bonus"></small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Senior -->
+  <div class="card subset-panel" id="panel-senior">
+    <div class="subset-header">Senior</div>
+    <div class="subset-grid">
+      <div class="subset-col">
+        <label class="subset-check"><input type="checkbox" id="senior-tossup" /> Toss-up</label>
+        <div class="range-inline">
+          <input id="senior-tossup-pages" placeholder="pages (e.g., 1-5,7,10-12)" />
+          <small class="muted" id="hint-senior-tossup"></small>
+        </div>
+      </div>
+      <div class="subset-col">
+        <label class="subset-check"><input type="checkbox" id="senior-bonus" /> Bonus</label>
+        <div class="range-inline">
+          <input id="senior-bonus-pages" placeholder="pages (leave blank for all)" />
+          <small class="muted" id="hint-senior-bonus"></small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C. Mode -->
+  <div class="card">
+    <label>Mode</label>
+    <div class="toggle-row">
+      <label><input type="radio" name="mode" value="mc" checked /> Multiple Choice</label>
+      <label><input type="radio" name="mode" value="flashcard" /> Flashcard</label>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="btn-start" disabled>Start</button>
+    <span id="match-count" class="muted">Loading questions…</span>
+  </div>
+  <button id="btn-back-to-start" class="link">Back</button>
+</section>
+
 
     <!-- Game Screen -->
 <section id="screen-game" class="screen">
