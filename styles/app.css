@@ -112,3 +112,28 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
 #screen-game.mode-flashcard #choices {
   display: none !important;
 }
+
+/* Levels row */
+.level-row {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+/* Subset panels (one per level) */
+.subset-panel { display: none; }              /* hidden until its level is checked */
+.subset-header { font-weight: 700; margin-bottom: 8px; }
+.subset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.subset-col { display: flex; flex-direction: column; gap: 8px; }
+.subset-check { font-weight: 600; }
+.range-inline input { width: 100%; }
+
+/* Narrow screens: stack columns */
+@media (max-width: 640px) {
+  .subset-grid { grid-template-columns: 1fr; }
+}
+
