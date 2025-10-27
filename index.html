@@ -119,9 +119,14 @@
     <!-- Game Screen -->
 <section id="screen-game" class="screen">
       <div class="topbar">
-    <button id="btn-back-to-filters" class="link">&larr; Back</button>
-    <div id="score-box" class="score hidden">Score: <span id="score">0</span></div>
-  </div>
+  <button id="btn-back-to-filters" class="link">&larr; Back</button>
+
+  <!-- NEW: Wrong List toggle -->
+  <button id="btn-toggle-wronglist" class="link">Wrong List</button>
+
+  <div id="score-box" class="score hidden">Score: <span id="score">0</span></div>
+</div>
+
 
   <!-- Titles for Competition mode (hidden by default) -->
   <h2 id="tossup-title" class="round-title hidden">Toss-up Question</h2>
@@ -131,12 +136,16 @@
 
 
 
-  <div class="actions">
-    <button id="btn-buzzer" class="buzzer">BUZZER</button>
-    <button id="btn-reveal" class="hidden">Reveal Answer</button>
-    <!-- NEW: Next Question (Flashcard mode) -->
+ <div class="actions">
+  <button id="btn-buzzer" class="buzzer">BUZZER</button>
+  <button id="btn-reveal" class="hidden">Reveal Answer</button>
+  <!-- Flashcard controls -->
+  <div class="flashcard-actions">
+    <button id="btn-mark-wrong" class="hidden">Mark Wrong</button>
     <button id="btn-next" class="hidden">Next Question</button>
   </div>
+</div>
+
 
   <div id="choices" class="choices hidden">
     <button class="choice" data-letter="A"></button>
@@ -182,7 +191,24 @@
 <div id="team1-score" class="team-score team1">Red Team: <span id="t1-score">0</span></div>
 <div id="team2-score" class="team-score team2">Blue Team: <span id="t2-score">0</span></div>
 
-  
+  <!-- Wrong List Modal -->
+<div id="wronglist-modal" class="modal hidden">
+  <div class="modal-backdrop" id="wronglist-backdrop"></div>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="wronglist-title">
+    <div class="modal-header">
+      <h3 id="wronglist-title">Wrong Question IDs</h3>
+      <button id="btn-close-wronglist" class="icon-close" aria-label="Close">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="muted" id="wronglist-count">0 unique</div>
+      <textarea id="wronglist-text" readonly></textarea>
+    </div>
+    <div class="modal-footer">
+      <button id="btn-copy-wronglist" class="btn">Copy to Clipboard</button>
+    </div>
+  </div>
+</div>
+
 </section>
 
   </div>
