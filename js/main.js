@@ -107,6 +107,7 @@ const t2ScoreEl = document.getElementById("t2-score");
     if (!screenGame) return;
     screenGame.classList.toggle("mode-flashcard", mode === "flashcard");
     screenGame.classList.toggle("mode-mc",        mode === "mc");
+    screenGame.classList.toggle("mode-competition", mode === "competition");
   }
 
   function shuffle(arr) {
@@ -116,6 +117,18 @@ const t2ScoreEl = document.getElementById("t2-score");
     }
     return arr;
   }
+
+  function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function nextTossUpQuestion() {
+  const q = pickRandom(tossPool);
+  return q || null;
+}
+function nextBonusQuestion() {
+  const q = pickRandom(bonusPool);
+  return q || null;
+}
+
 
   function resetSession() {
     score = 0;
@@ -176,33 +189,43 @@ function setTypesForLevel(level, isChecked) {
   }
 
   function computeMatches() {
-    const selections = readSelections();
-    let result = [];
+  const selections = readSelections();
+  // Build the full result (your app’s existing logic usually lives here).
+  // Keep your existing merge/de-dupe logic if you have it; here’s a safe default:
+  let result = [];
 
-    if (selections.length === 0) {
-      if (matchCount) matchCount.textContent = "0 matching questions";
-      if (btnStart) btnStart.disabled = true;
-      return result;
-    }
-
-    for (const { level, type, pages } of selections) {
-      let subset = data.filter(r => r.Level === level && r.Type === type);
-      if (pages.length) subset = subset.filter(r => pages.includes(r.Page));
-      result = result.concat(subset);
-    }
-
-    // de-dupe by ID
-    const seen = new Set();
-    result = result.filter(r => {
-      if (seen.has(r.ID)) return false;
-      seen.add(r.ID);
-      return true;
-    });
-
-    if (matchCount) matchCount.textContent = `${result.length} matching questions`;
-    if (btnStart) btnStart.disabled = result.length === 0;
-    return result;
+  for (const sel of selections) {
+    // sel = { level, type, pages[] } from your UI
+    let subset = data.filter(r =>
+      r.Level === sel.level &&
+      r.Type === sel.type &&
+      (!sel.pages || sel.pages.length === 0 || sel.pages.includes(r.Page))
+    );
+    result = result.concat(subset);
   }
+
+  // De-dupe by (Level, Type, Page, Question) if desired:
+  const seen = new Set();
+  result = result.filter(r => {
+    const key = `${r.Level}|${r.Type}|${r.Page}|${r.Question}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  // Count toss-ups specifically (Competition requires at least one Toss-up)
+  const tossCount = result.filter(r => r.Type === "Toss-up").length;
+
+  if (matchCount) matchCount.textContent = `${result.length} matching questions`;
+
+  // Gate the Start button: Competition needs at least one Toss-up
+  if (btnStart) {
+    const ok = (mode === "competition") ? (tossCount > 0) : (result.length > 0);
+    btnStart.disabled = !ok;
+  }
+  return result;
+}
+
 
 // Toggle visual selected-state on labels when checkboxes change
 function styleToggleFor(inputEl) {
@@ -264,6 +287,70 @@ function initToggleSync() {
     index = (index + 1) % queue.length;
     renderQuestion();
   }
+
+  function renderQAToBoxes(record) {
+  // Reset
+  if (qBox) qBox.textContent = "";
+  if (aBox) { aBox.textContent = ""; aBox.classList.add("hidden"); }
+  if (btnReveal) btnReveal.classList.remove("hidden");
+
+  // Show question instantly for Competition (moderator reads it)
+  Game.revealInstant(qBox, record.Question);
+  current = record;
+}
+
+function renderCompetitionQuestion() {
+  if (compPhase === "tossup") {
+    const q = nextTossUpQuestion();
+    if (!q) { Game.revealInstant(qBox, "No more Toss-up questions."); return; }
+    renderQAToBoxes(q);
+    // Controls: show comp controls, hide bonus controls
+    if (compControls)  compControls.classList.remove("hidden");
+    if (bonusControls) bonusControls.classList.add("hidden");
+  } else {
+    const q = nextBonusQuestion();
+    if (!q) {
+      // If no bonus pool, just skip straight back to Toss-up
+      compPhase = "tossup";
+      bonusFor  = null;
+      renderCompetitionQuestion();
+      return;
+    }
+    renderQAToBoxes(q);
+    // Paint dynamic colors/text for the active team banner
+    if (activeTeamBanner) {
+      activeTeamBanner.textContent = `Active Team: ${bonusFor === 1 ? "Team 1" : "Team 2"}`;
+      activeTeamBanner.style.color = (bonusFor === 1 ? "#c53c3c" : "#234fb0");
+    }
+    if (compControls)  compControls.classList.add("hidden");
+    if (bonusControls) bonusControls.classList.remove("hidden");
+
+    // Color both bonus buttons to match the active team
+    const teamBg = (bonusFor === 1 ? "#e54b4b" : "#2f6fed");
+    const teamText = "#fff";
+    const teamAltText = (bonusFor === 1 ? "#b02020" : "#0f2e7a");
+    if (btnBonusPlus10) {
+      btnBonusPlus10.style.background = teamBg;
+      btnBonusPlus10.style.color = teamText;
+    }
+    if (btnBonusNo) {
+      btnBonusNo.style.background = (bonusFor === 1 ? "#ffd9d9" : "#d9e6ff");
+      btnBonusNo.style.color = (bonusFor === 1 ? "#7a1212" : "#163b83");
+    }
+  }
+}
+
+function competitionToNextTossUp() {
+  compPhase = "tossup";
+  bonusFor  = null;
+  renderCompetitionQuestion();
+}
+
+function adjustTeamScore(team, delta) {
+  if (team === 1) { t1 += delta; if (t1ScoreEl) t1ScoreEl.textContent = String(t1); }
+  if (team === 2) { t2 += delta; if (t2ScoreEl) t2ScoreEl.textContent = String(t2); }
+}
+
 
   // ---------- PWA SW ----------
   if ("serviceWorker" in navigator) {
@@ -337,14 +424,56 @@ computeMatches();
 
   // Start session
   on(btnStart, "click", () => {
-    const matches = computeMatches();
+  const matches = computeMatches();
+  resetSession();
+
+  mode = Array.from(modeRadios).find(r => r.checked)?.value || "mc";
+  updateModeClass();
+  showScreen("game");
+
+  if (mode === "competition") {
+    // Build Toss-up and Bonus pools separately from selections:
+    const selections = readSelections();
+
+    tossPool = [];
+    bonusPool = [];
+    for (const { level, type, pages } of selections) {
+      let subset = data.filter(r => r.Level === level && r.Type === type);
+      if (pages.length) subset = subset.filter(r => pages.includes(r.Page));
+      if (type === "Toss-up") tossPool = tossPool.concat(subset);
+      if (type === "Bonus")   bonusPool = bonusPool.concat(subset);
+    }
+
+    // Guard: must have at least toss-ups; bonus optional but recommended
+    if (!tossPool.length) {
+      qBox.textContent = "No Toss-up questions match your filters.";
+      return;
+    }
+
+    // init comp state
+    t1 = 0; t2 = 0;
+    compPhase = "tossup";
+    bonusFor = null;
+    if (t1ScoreEl) t1ScoreEl.textContent = "0";
+    if (t2ScoreEl) t2ScoreEl.textContent = "0";
+
+    // show relevant blocks
+    if (compControls)  compControls.classList.remove("hidden");
+    if (bonusControls) bonusControls.classList.add("hidden");
+    if (btnReveal)     btnReveal.classList.remove("hidden");   // keep reveal for answer
+    if (btnBuzzer)     btnBuzzer.classList.add("hidden");
+    if (choicesWrap)   choicesWrap.classList.add("hidden");
+
+    // render first Toss-up
+    renderCompetitionQuestion();
+  } else {
+    // PRACTICE MODES (existing behavior)
     queue = shuffle(matches.slice());
-    resetSession();
-    mode = Array.from(modeRadios).find(r => r.checked)?.value || "mc";
-    updateModeClass();
     showScreen("game");
     renderQuestion();
-  });
+  }
+});
+
 
   // BUZZER (MC only)
   on(btnBuzzer, "click", () => {
@@ -406,3 +535,50 @@ computeMatches();
   showScreen("start");
   computeMatches();
 })();
+
+
+// --- Competition: Toss-up actions ---
+on(btnT1Plus10, "click", () => {
+  if (mode !== "competition") return;
+  adjustTeamScore(1, 10);
+  bonusFor  = 1;
+  compPhase = "bonus";
+  renderCompetitionQuestion();
+});
+
+on(btnT1Minus5, "click", () => {
+  if (mode !== "competition") return;
+  adjustTeamScore(1, -5);
+  competitionToNextTossUp();
+});
+
+on(btnT2Plus10, "click", () => {
+  if (mode !== "competition") return;
+  adjustTeamScore(2, 10);
+  bonusFor  = 2;
+  compPhase = "bonus";
+  renderCompetitionQuestion();
+});
+
+on(btnT2Minus5, "click", () => {
+  if (mode !== "competition") return;
+  adjustTeamScore(2, -5);
+  competitionToNextTossUp();
+});
+
+on(btnCompNoScore, "click", () => {
+  if (mode !== "competition") return;
+  competitionToNextTossUp();
+});
+
+// --- Competition: Bonus actions ---
+on(btnBonusPlus10, "click", () => {
+  if (mode !== "competition" || !bonusFor) return;
+  adjustTeamScore(bonusFor, 10);
+  competitionToNextTossUp();
+});
+
+on(btnBonusNo, "click", () => {
+  if (mode !== "competition") return;
+  competitionToNextTossUp();
+});
