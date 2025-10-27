@@ -80,6 +80,19 @@ const activeTeamBanner = document.getElementById("active-team-banner");
 const t1ScoreEl = document.getElementById("t1-score");
 const t2ScoreEl = document.getElementById("t2-score");
 
+  // Wrong list UI
+const btnToggleWrongList = document.getElementById("btn-toggle-wronglist");
+const wronglistModal     = document.getElementById("wronglist-modal");
+const wronglistBackdrop  = document.getElementById("wronglist-backdrop");
+const btnCloseWrongList  = document.getElementById("btn-close-wronglist");
+const btnCopyWrongList   = document.getElementById("btn-copy-wronglist");
+const wronglistCount     = document.getElementById("wronglist-count");
+const wronglistText      = document.getElementById("wronglist-text");
+
+// Flashcard 'Mark Wrong'
+const btnMarkWrong       = document.getElementById("btn-mark-wrong");
+
+
 
   // ---------- App State ----------
   let data = [];
@@ -100,7 +113,37 @@ const t2ScoreEl = document.getElementById("t2-score");
   let tossPool = [];
   let bonusPool = [];
 
-  
+  // Track wrong IDs for the current session
+let wrongIds = new Set();
+
+function getRecordId(r) {
+  // Try common ID field names; fall back to first column detection if needed
+  return (
+    r?.ID ?? r?.Id ?? r?.id ?? r?.QID ?? r?.QuestionID ?? r?.idx ?? r?.index ?? r?.["ID"] ?? r?.["Question ID"] ?? null
+  );
+}
+
+function trackWrong(record) {
+  const id = getRecordId(record);
+  if (id == null) return;
+  wrongIds.add(String(id));
+  updateWrongListUI();
+}
+
+function updateWrongListUI() {
+  if (wronglistCount) wronglistCount.textContent = `${wrongIds.size} unique`;
+  if (wronglistText)  wronglistText.value = Array.from(wrongIds).join("\n");
+}
+
+function openWrongList() {
+  updateWrongListUI();
+  if (wronglistModal) wronglistModal.classList.remove("hidden");
+}
+
+function closeWrongList() {
+  if (wronglistModal) wronglistModal.classList.add("hidden");
+}
+
 
   // ---------- Helpers ----------
   function updateModeClass() {
@@ -136,6 +179,10 @@ function nextBonusQuestion() {
     current = null;
     answered = false;
     if (scoreEl) scoreEl.textContent = "0";
+    wrongIds = new Set();
+  updateWrongListUI();
+  closeWrongList();
+
   }
 
   function updatePanelsVisibility() {
@@ -472,6 +519,8 @@ on(btnStart, "click", () => {
     if (btnBuzzer)     btnBuzzer.classList.add("hidden");
     if (choicesWrap)   choicesWrap.classList.add("hidden");
     if (btnNext)       btnNext.classList.add("hidden");
+    if (btnMarkWrong) btnMarkWrong.classList.add("hidden");
+
 
     renderCompetitionQuestion();
   } else {
@@ -484,6 +533,12 @@ on(btnStart, "click", () => {
     if (bonusControls) bonusControls.classList.add("hidden");
     if (t1ScoreEl)     t1ScoreEl.textContent = "0";
     if (t2ScoreEl)     t2ScoreEl.textContent = "0";
+
+      // Flashcard-only 'Mark Wrong'
+  if (btnMarkWrong) {
+    if (mode === "flashcard") btnMarkWrong.classList.remove("hidden");
+    else btnMarkWrong.classList.add("hidden");
+  }
 
     // PRACTICE MODES
     queue = shuffle(matches.slice());
@@ -538,6 +593,7 @@ on(btnStart, "click", () => {
         btn.classList.add("incorrect");
         const correctBtn = choiceButtons.find(b => b.getAttribute("data-letter") === correct);
         if (correctBtn) correctBtn.classList.add("correct");
+        if (current) trackWrong(current);
       }
       if (scoreEl) scoreEl.textContent = String(score);
 
@@ -561,6 +617,7 @@ on(btnStart, "click", () => {
   on(btnT1Minus5, "click", () => {
     if (mode !== "competition") return;
     adjustTeamScore(1, -5);
+    if (current) trackWrong(current);
     competitionToNextTossUp();
   });
 
@@ -575,11 +632,13 @@ on(btnStart, "click", () => {
   on(btnT2Minus5, "click", () => {
     if (mode !== "competition") return;
     adjustTeamScore(2, -5);
+    if (current) trackWrong(current);
     competitionToNextTossUp();
   });
 
   on(btnCompNoScore, "click", () => {
     if (mode !== "competition") return;
+    if (current) trackWrong(current);
     competitionToNextTossUp();
   });
 
@@ -592,8 +651,32 @@ on(btnStart, "click", () => {
 
   on(btnBonusNo, "click", () => {
     if (mode !== "competition") return;
+    if (current) trackWrong(current);
     competitionToNextTossUp();
   });
+
+  on(btnToggleWrongList, "click", openWrongList);
+on(btnCloseWrongList,  "click", closeWrongList);
+on(wronglistBackdrop,  "click", closeWrongList);
+
+on(btnCopyWrongList, "click", async () => {
+  if (!wronglistText) return;
+  try {
+    await navigator.clipboard.writeText(wronglistText.value);
+    btnCopyWrongList.textContent = "Copied!";
+    setTimeout(() => (btnCopyWrongList.textContent = "Copy to Clipboard"), 1200);
+  } catch {
+    // Fallback: select text
+    wronglistText.select();
+    document.execCommand("copy");
+  }
+});
+
+  on(btnMarkWrong, "click", () => {
+  if (mode !== "flashcard") return;
+  if (current) trackWrong(current);
+});
+
 
   
   // ---------- Init ----------
