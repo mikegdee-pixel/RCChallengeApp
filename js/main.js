@@ -319,7 +319,7 @@ function renderCompetitionQuestion() {
     renderQAToBoxes(q);
     // Paint dynamic colors/text for the active team banner
     if (activeTeamBanner) {
-      activeTeamBanner.textContent = `Active Team: ${bonusFor === 1 ? "Team 1" : "Team 2"}`;
+      activeTeamBanner.textContent = `Active Team: ${bonusFor === 1 ? "Red Team" : "Blue Team"}`;
       activeTeamBanner.style.color = (bonusFor === 1 ? "#c53c3c" : "#234fb0");
     }
     if (compControls)  compControls.classList.add("hidden");
