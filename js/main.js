@@ -301,11 +301,18 @@ function initToggleSync() {
 
 function renderCompetitionQuestion() {
 
-  const tossupTitle = document.getElementById("tossup-title");
-if (tossupTitle) {
-  if (compPhase === "tossup") tossupTitle.classList.remove("hidden");
-  else tossupTitle.classList.add("hidden");
+const tossupTitle = document.getElementById("tossup-title");
+const bonusTitle  = document.getElementById("bonus-title");
+if (tossupTitle && bonusTitle) {
+  if (compPhase === "tossup") {
+    tossupTitle.classList.remove("hidden");
+    bonusTitle.classList.add("hidden");
+  } else {
+    tossupTitle.classList.add("hidden");
+    bonusTitle.classList.remove("hidden");
+  }
 }
+
   
   if (compPhase === "tossup") {
     const q = nextTossUpQuestion();
@@ -469,6 +476,10 @@ on(btnStart, "click", () => {
     renderCompetitionQuestion();
   } else {
     // ===== hide all Competition UI when NOT in Competition =====
+    const tossupTitle = document.getElementById("tossup-title");
+    const bonusTitle  = document.getElementById("bonus-title");
+    if (tossupTitle) tossupTitle.classList.add("hidden");
+    if (bonusTitle)  bonusTitle.classList.add("hidden");
     if (compControls)  compControls.classList.add("hidden");
     if (bonusControls) bonusControls.classList.add("hidden");
     if (t1ScoreEl)     t1ScoreEl.textContent = "0";
