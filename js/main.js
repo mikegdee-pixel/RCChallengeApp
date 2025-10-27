@@ -141,6 +141,11 @@ function toggleWrongList() {
   wronglistModal.classList.toggle("hidden");
 }
 
+function closeWrongList() {
+  if (!wronglistModal) return;
+  wronglistModal.classList.add("hidden");
+}
+
 
 
   // ---------- Helpers ----------
