@@ -258,3 +258,27 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
 #tossup-title.hidden {
   display: none;
 }
+
+/* === Round titles (Competition-mode only) === */
+.round-title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin: 12px 0 8px;
+}
+
+/* hidden utility already used elsewhere */
+.round-title.hidden { display: none; }
+
+/* Titles are NEVER shown in MC/Flashcard */
+#screen-game:not(.mode-competition) #tossup-title,
+#screen-game:not(.mode-competition) #bonus-title {
+  display: none !important;
+}
+
+/* In Competition mode, JS will remove .hidden on the active one */
+#screen-game.mode-competition #tossup-title:not(.hidden),
+#screen-game.mode-competition #bonus-title:not(.hidden) {
+  display: block;
+}
+
