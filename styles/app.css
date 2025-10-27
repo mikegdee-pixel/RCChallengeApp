@@ -182,11 +182,6 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
   display: none !important; /* Competition doesn't use MC grid or 'Next' */
 }
 
-#screen-game.mode-competition #comp-controls,
-#screen-game.mode-competition #bonus-controls {
-  display: block;
-}
-
 .comp-row {
   display: flex;
   align-items: center;
