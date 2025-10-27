@@ -174,3 +174,55 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
   background: #475569;         /* slate-ish */
   border-color: #475569;
 }
+
+/* --- Competition Mode UI --- */
+#screen-game.mode-competition #btn-buzzer,
+#screen-game.mode-competition #choices,
+#screen-game.mode-competition #btn-next {
+  display: none !important; /* Competition doesn't use MC grid or 'Next' */
+}
+
+#screen-game.mode-competition #comp-controls,
+#screen-game.mode-competition #bonus-controls {
+  display: block;
+}
+
+.comp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.comp-row.center { justify-content: center; }
+
+.comp-row .side.left  { display: flex; gap: 10px; }
+.comp-row .side.right { display: flex; gap: 10px; }
+
+.btn-red   { background: #e54b4b; color: #fff; font-weight: 700; }
+.btn-blue  { background: #2f6fed; color: #fff; font-weight: 700; }
+.btn-green { background: #22a06b; color: #fff; font-weight: 700; }
+
+.btn-red:hover   { background: #c53c3c; }
+.btn-blue:hover  { background: #234fb0; }
+.btn-green:hover { background: #1a7e54; }
+
+.active-team {
+  font-weight: 800;
+  margin-top: 6px;
+}
+
+.team-score {
+  position: fixed;
+  bottom: 14px;
+  font-weight: 800;
+  font-size: 18px;
+  pointer-events: none;
+  user-select: none;
+}
+.team-score.team1 { left: 14px;  color: #c53c3c; } /* red */
+.team-score.team2 { right: 14px; color: #234fb0; } /* blue */
+
+#screen-game.mode-competition #score-box { display: none; } /* hide practice score */
+
