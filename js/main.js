@@ -422,8 +422,7 @@ computeMatches();
     computeMatches();
   }));
 
-  // Start session
-  on(btnStart, "click", () => {
+on(btnStart, "click", () => {
   const matches = computeMatches();
   resetSession();
 
@@ -432,47 +431,48 @@ computeMatches();
   showScreen("game");
 
   if (mode === "competition") {
-    // Build Toss-up and Bonus pools separately from selections:
+    // Build Toss-up and Bonus pools from current selections
     const selections = readSelections();
-
     tossPool = [];
     bonusPool = [];
-    for (const { level, type, pages } of selections) {
-      let subset = data.filter(r => r.Level === level && r.Type === type);
-      if (pages.length) subset = subset.filter(r => pages.includes(r.Page));
-      if (type === "Toss-up") tossPool = tossPool.concat(subset);
-      if (type === "Bonus")   bonusPool = bonusPool.concat(subset);
+    for (const sel of selections) {
+      let subset = data.filter(r =>
+        r.Level === sel.level &&
+        r.Type  === sel.type &&
+        (!sel.pages || sel.pages.length === 0 || sel.pages.includes(r.Page))
+      );
+      if (sel.type === "Toss-up") tossPool = tossPool.concat(subset);
+      if (sel.type === "Bonus")   bonusPool = bonusPool.concat(subset);
     }
 
-    // Guard: must have at least toss-ups; bonus optional but recommended
-    if (!tossPool.length) {
-      qBox.textContent = "No Toss-up questions match your filters.";
-      return;
-    }
-
-    // init comp state
+    // initialize competition state
     t1 = 0; t2 = 0;
     compPhase = "tossup";
-    bonusFor = null;
+    bonusFor  = null;
     if (t1ScoreEl) t1ScoreEl.textContent = "0";
     if (t2ScoreEl) t2ScoreEl.textContent = "0";
 
-    // show relevant blocks
+    // Show comp UI / hide MC UI
     if (compControls)  compControls.classList.remove("hidden");
     if (bonusControls) bonusControls.classList.add("hidden");
-    if (btnReveal)     btnReveal.classList.remove("hidden");   // keep reveal for answer
     if (btnBuzzer)     btnBuzzer.classList.add("hidden");
     if (choicesWrap)   choicesWrap.classList.add("hidden");
+    if (btnNext)       btnNext.classList.add("hidden");
 
-    // render first Toss-up
     renderCompetitionQuestion();
   } else {
-    // PRACTICE MODES (existing behavior)
+    // ===== hide all Competition UI when NOT in Competition =====
+    if (compControls)  compControls.classList.add("hidden");
+    if (bonusControls) bonusControls.classList.add("hidden");
+    if (t1ScoreEl)     t1ScoreEl.textContent = "0";
+    if (t2ScoreEl)     t2ScoreEl.textContent = "0";
+
+    // PRACTICE MODES
     queue = shuffle(matches.slice());
-    showScreen("game");
     renderQuestion();
   }
 });
+
 
 
   // BUZZER (MC only)
