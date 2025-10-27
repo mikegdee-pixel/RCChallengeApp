@@ -531,54 +531,57 @@ computeMatches();
     });
   });
 
+  // --- Competition: Toss-up actions ---
+  on(btnT1Plus10, "click", () => {
+    if (mode !== "competition") return;
+    adjustTeamScore(1, 10);
+    bonusFor  = 1;
+    compPhase = "bonus";
+    renderCompetitionQuestion();
+  });
+
+  on(btnT1Minus5, "click", () => {
+    if (mode !== "competition") return;
+    adjustTeamScore(1, -5);
+    competitionToNextTossUp();
+  });
+
+  on(btnT2Plus10, "click", () => {
+    if (mode !== "competition") return;
+    adjustTeamScore(2, 10);
+    bonusFor  = 2;
+    compPhase = "bonus";
+    renderCompetitionQuestion();
+  });
+
+  on(btnT2Minus5, "click", () => {
+    if (mode !== "competition") return;
+    adjustTeamScore(2, -5);
+    competitionToNextTossUp();
+  });
+
+  on(btnCompNoScore, "click", () => {
+    if (mode !== "competition") return;
+    competitionToNextTossUp();
+  });
+
+  // --- Competition: Bonus actions ---
+  on(btnBonusPlus10, "click", () => {
+    if (mode !== "competition" || !bonusFor) return;
+    adjustTeamScore(bonusFor, 10);
+    competitionToNextTossUp();
+  });
+
+  on(btnBonusNo, "click", () => {
+    if (mode !== "competition") return;
+    competitionToNextTossUp();
+  });
+
+  
   // ---------- Init ----------
   showScreen("start");
   computeMatches();
 })();
 
 
-// --- Competition: Toss-up actions ---
-on(btnT1Plus10, "click", () => {
-  if (mode !== "competition") return;
-  adjustTeamScore(1, 10);
-  bonusFor  = 1;
-  compPhase = "bonus";
-  renderCompetitionQuestion();
-});
 
-on(btnT1Minus5, "click", () => {
-  if (mode !== "competition") return;
-  adjustTeamScore(1, -5);
-  competitionToNextTossUp();
-});
-
-on(btnT2Plus10, "click", () => {
-  if (mode !== "competition") return;
-  adjustTeamScore(2, 10);
-  bonusFor  = 2;
-  compPhase = "bonus";
-  renderCompetitionQuestion();
-});
-
-on(btnT2Minus5, "click", () => {
-  if (mode !== "competition") return;
-  adjustTeamScore(2, -5);
-  competitionToNextTossUp();
-});
-
-on(btnCompNoScore, "click", () => {
-  if (mode !== "competition") return;
-  competitionToNextTossUp();
-});
-
-// --- Competition: Bonus actions ---
-on(btnBonusPlus10, "click", () => {
-  if (mode !== "competition" || !bonusFor) return;
-  adjustTeamScore(bonusFor, 10);
-  competitionToNextTossUp();
-});
-
-on(btnBonusNo, "click", () => {
-  if (mode !== "competition") return;
-  competitionToNextTossUp();
-});
