@@ -62,6 +62,25 @@
   const choicesWrap     = document.getElementById("choices");
   const choiceButtons   = Array.from(document.querySelectorAll(".choice"));
 
+  // Competition controls
+const compControls   = document.getElementById("comp-controls");
+const bonusControls  = document.getElementById("bonus-controls");
+const btnT1Plus10    = document.getElementById("t1-plus10");
+const btnT1Minus5    = document.getElementById("t1-minus5");
+const btnT2Plus10    = document.getElementById("t2-plus10");
+const btnT2Minus5    = document.getElementById("t2-minus5");
+const btnCompNoScore = document.getElementById("comp-noscore");
+
+// Bonus
+const btnBonusPlus10 = document.getElementById("bonus-plus10");
+const btnBonusNo     = document.getElementById("bonus-noscore");
+const activeTeamBanner = document.getElementById("active-team-banner");
+
+// Team score readouts
+const t1ScoreEl = document.getElementById("t1-score");
+const t2ScoreEl = document.getElementById("t2-score");
+
+
   // ---------- App State ----------
   let data = [];
   let queue = [];
@@ -70,6 +89,18 @@
   let mode = "mc";       // "mc" | "flashcard"
   let current = null;
   let answered = false;  // prevent double picks in MC
+
+  // Competition state
+  let t1 = 0;
+  let t2 = 0;
+  let compPhase = "tossup";      // "tossup" | "bonus"
+  let bonusFor = null;           // 1 | 2 | null
+
+  // dynamic pools filtered by selections when session starts
+  let tossPool = [];
+  let bonusPool = [];
+
+  
 
   // ---------- Helpers ----------
   function updateModeClass() {
