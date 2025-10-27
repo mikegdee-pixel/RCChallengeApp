@@ -135,14 +135,12 @@ function updateWrongListUI() {
   if (wronglistText)  wronglistText.value = Array.from(wrongIds).join("\n");
 }
 
-function openWrongList() {
+function toggleWrongList() {
   updateWrongListUI();
-  if (wronglistModal) wronglistModal.classList.remove("hidden");
+  if (!wronglistModal) return;
+  wronglistModal.classList.toggle("hidden");
 }
 
-function closeWrongList() {
-  if (wronglistModal) wronglistModal.classList.add("hidden");
-}
 
 
   // ---------- Helpers ----------
@@ -655,7 +653,7 @@ on(btnStart, "click", () => {
     competitionToNextTossUp();
   });
 
-  on(btnToggleWrongList, "click", openWrongList);
+on(btnToggleWrongList, "click", toggleWrongList);
 on(btnCloseWrongList,  "click", closeWrongList);
 on(wronglistBackdrop,  "click", closeWrongList);
 
