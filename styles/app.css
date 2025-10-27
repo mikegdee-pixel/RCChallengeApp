@@ -221,3 +221,25 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
 
 #screen-game.mode-competition #score-box { display: none; } /* hide practice score */
 
+/* === Scope Competition UI to Competition mode only === */
+
+/* Hide by default */
+#comp-controls,
+#bonus-controls {
+  display: none;
+}
+
+.team-score {
+  display: none;
+}
+
+/* Show only when #screen-game is in Competition mode AND the block is not .hidden */
+#screen-game.mode-competition #comp-controls:not(.hidden),
+#screen-game.mode-competition #bonus-controls:not(.hidden) {
+  display: block;
+}
+
+/* Team scores only in Competition mode */
+#screen-game.mode-competition .team-score {
+  display: block;
+}
