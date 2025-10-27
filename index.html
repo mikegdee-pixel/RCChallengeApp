@@ -104,6 +104,7 @@
     <div class="toggle-row">
       <label><input type="radio" name="mode" value="mc" checked /> Multiple Choice</label>
       <label><input type="radio" name="mode" value="flashcard" /> Flashcard</label>
+      <label><input type="radio" name="mode" value="competition" /> Competition</label>
     </div>
   </div>
 
@@ -139,6 +140,43 @@
   </div>
 
   <div id="answer-box" class="answer-box hidden"></div>
+
+<!-- Competition Mode controls (hidden by default) -->
+<div id="comp-controls" class="hidden">
+  <!-- First row: red buttons (Team 1) left, blue (Team 2) right -->
+  <div class="comp-row">
+    <div class="side left">
+      <button id="t1-plus10" class="btn-red">+10</button>
+      <button id="t1-minus5" class="btn-red">-5</button>
+    </div>
+    <div class="side right">
+      <button id="t2-plus10" class="btn-blue">+10</button>
+      <button id="t2-minus5" class="btn-blue">-5</button>
+    </div>
+  </div>
+
+  <!-- Second row: centered green -->
+  <div class="comp-row center">
+    <button id="comp-noscore" class="btn-green">No Score</button>
+  </div>
+</div>
+
+<!-- Bonus controls (only visible during bonus phase) -->
+<div id="bonus-controls" class="hidden">
+  <div class="comp-row center">
+    <button id="bonus-plus10" class="btn-dynamic">+10</button>
+    <button id="bonus-noscore" class="btn-dynamic">No Score</button>
+  </div>
+  <div class="comp-row center">
+    <div id="active-team-banner" class="active-team"></div>
+  </div>
+</div>
+
+<!-- Team scores (bottom corners) -->
+<div id="team1-score" class="team-score team1">Team 1: <span id="t1-score">0</span></div>
+<div id="team2-score" class="team-score team2">Team 2: <span id="t2-score">0</span></div>
+
+  
 </section>
 
   </div>
