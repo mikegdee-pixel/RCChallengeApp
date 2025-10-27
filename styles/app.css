@@ -317,3 +317,24 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
 
 /* Group Flashcard actions together (optional aesthetics) */
 .flashcard-actions { display: inline-flex; gap: 8px; align-items: center; }
+
+/* === Wrong List toggle button (bottom center) === */
+.btn-wronglist {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 9999px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  cursor: pointer;
+  z-index: 1100; /* above modal backdrop */
+}
+.btn-wronglist:hover {
+  background: #111;
+}
+
