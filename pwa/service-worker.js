@@ -1,4 +1,4 @@
-const CACHE = "rc-trivia-v18";
+const CACHE = "rc-trivia-v19";
 
 
 const ASSETS = [
