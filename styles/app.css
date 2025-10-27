@@ -237,7 +237,9 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
 #screen-game.mode-competition #comp-controls:not(.hidden),
 #screen-game.mode-competition #bonus-controls:not(.hidden) {
   display: block;
+  margin-top: 24px; /* add breathing room under the Answer box */
 }
+
 
 /* Team scores only in Competition mode */
 #screen-game.mode-competition .team-score {
