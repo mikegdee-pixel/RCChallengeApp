@@ -300,6 +300,13 @@ function initToggleSync() {
 }
 
 function renderCompetitionQuestion() {
+
+  const tossupTitle = document.getElementById("tossup-title");
+if (tossupTitle) {
+  if (compPhase === "tossup") tossupTitle.classList.remove("hidden");
+  else tossupTitle.classList.add("hidden");
+}
+  
   if (compPhase === "tossup") {
     const q = nextTossUpQuestion();
     if (!q) { Game.revealInstant(qBox, "No more Toss-up questions."); return; }
