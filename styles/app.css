@@ -245,3 +245,16 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
 #screen-game.mode-competition .team-score {
   display: block;
 }
+
+/* Toss-up title styling */
+.tossup-title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin: 12px 0 8px;
+}
+
+/* Hidden by default */
+#tossup-title.hidden {
+  display: none;
+}
