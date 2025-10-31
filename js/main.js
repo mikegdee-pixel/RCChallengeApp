@@ -113,6 +113,16 @@ const btnMarkWrong       = document.getElementById("btn-mark-wrong");
   let tossPool = [];
   let bonusPool = [];
 
+  // draw-without-replacement decks (Competition)
+  let tossDeck = [];
+  let bonusDeck = [];
+
+  function refillDeckFromPool(pool) {
+    // returns a freshly shuffled copy of pool
+    return shuffle(pool.slice());
+  }
+
+
   // Track wrong IDs for the current session
 let wrongIds = new Set();
 
@@ -167,13 +177,21 @@ function closeWrongList() {
   function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 function nextTossUpQuestion() {
-  const q = pickRandom(tossPool);
-  return q || null;
+  if (!tossPool.length) return null;
+  if (tossDeck.length === 0) {
+    tossDeck = refillDeckFromPool(tossPool);
+  }
+  return tossDeck.shift() || null; // draw without replacement
 }
+
 function nextBonusQuestion() {
-  const q = pickRandom(bonusPool);
-  return q || null;
+  if (!bonusPool.length) return null;
+  if (bonusDeck.length === 0) {
+    bonusDeck = refillDeckFromPool(bonusPool);
+  }
+  return bonusDeck.shift() || null; // draw without replacement
 }
+
 
 
   function resetSession() {
@@ -332,11 +350,19 @@ function initToggleSync() {
     }
   }
 
-  function nextQuestion() {
-    if (!queue.length) return;
-    index = (index + 1) % queue.length;
-    renderQuestion();
+ function nextQuestion() {
+  if (!queue.length) return;
+
+  if (index < queue.length - 1) {
+    index += 1;
+  } else {
+    // finished a full pass → reshuffle the entire set for a fresh cycle
+    queue = shuffle(queue.slice());
+    index = 0;
   }
+  renderQuestion();
+}
+
 
   function renderQAToBoxes(record) {
   // Reset
@@ -509,12 +535,18 @@ on(btnStart, "click", () => {
       if (sel.type === "Bonus")   bonusPool = bonusPool.concat(subset);
     }
 
-    // initialize competition state
+        // initialize competition state
     t1 = 0; t2 = 0;
     compPhase = "tossup";
     bonusFor  = null;
+
+    // reset decks so a new session starts fresh
+    tossDeck = [];
+    bonusDeck = [];
+
     if (t1ScoreEl) t1ScoreEl.textContent = "0";
     if (t2ScoreEl) t2ScoreEl.textContent = "0";
+
 
     // Show comp UI / hide MC UI
     if (compControls)  compControls.classList.remove("hidden");
