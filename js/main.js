@@ -537,14 +537,20 @@ computeMatches();
 
 
 
-  // Subset checks + page inputs → recompute
+  // Subset checks + page inputs + ID list → recompute
   [
-    noviceToss, noviceBonus, juniorToss, juniorBonus, seniorToss, seniorBonus,
-    noviceTossPages, noviceBonusPages, juniorTossPages, juniorBonusPages, seniorTossPages, seniorBonusPages
+    noviceToss, noviceBonus,
+    juniorToss, juniorBonus,
+    seniorToss, seniorBonus,
+    noviceTossPages, noviceBonusPages,
+    juniorTossPages, juniorBonusPages,
+    seniorTossPages, seniorBonusPages,
+    idListInput                      // NEW: paste/edit IDs should also recompute
   ].forEach(el => {
     on(el, "input",  computeMatches);
     on(el, "change", computeMatches);
   });
+
 
   // Mode radio → just store mode and recompute count (for Start enable)
   modeRadios.forEach(r => on(r, "change", () => {
