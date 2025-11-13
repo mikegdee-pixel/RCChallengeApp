@@ -23,10 +23,15 @@
   const levelNovice     = document.getElementById("level-novice");
   const levelJunior     = document.getElementById("level-junior");
   const levelSenior     = document.getElementById("level-senior");
+  const levelIds        = document.getElementById("level-ids");
 
   const panelNovice     = document.getElementById("panel-novice");
   const panelJunior     = document.getElementById("panel-junior");
   const panelSenior     = document.getElementById("panel-senior");
+  const panelIds        = document.getElementById("panel-ids");
+
+  const idListInput     = document.getElementById("id-list-input");
+
 
   // Novice
   const noviceToss      = document.getElementById("novice-tossup");
@@ -133,6 +138,22 @@ function getRecordId(r) {
   );
 }
 
+  function parseIdList() {
+  if (!idListInput) return new Set();
+  const raw = idListInput.value || "";
+  if (!raw.trim()) return new Set();
+
+  const parts = raw.split(/[\s,]+/);
+  const set = new Set();
+  for (const p of parts) {
+    const v = p.trim();
+    if (!v) continue;
+    set.add(v);
+  }
+  return set;
+}
+
+
 function trackWrong(record) {
   const id = getRecordId(record);
   if (id == null) return;
@@ -206,11 +227,13 @@ function nextBonusQuestion() {
 
   }
 
-  function updatePanelsVisibility() {
+   function updatePanelsVisibility() {
     if (panelNovice) panelNovice.style.display = levelNovice?.checked ? "block" : "none";
     if (panelJunior) panelJunior.style.display = levelJunior?.checked ? "block" : "none";
     if (panelSenior) panelSenior.style.display = levelSenior?.checked ? "block" : "none";
+    if (panelIds)    panelIds.style.display    = levelIds?.checked    ? "block" : "none";
   }
+
 
   function pageHint(level, type) {
     const subsetPages = Array.from(new Set(
@@ -257,42 +280,57 @@ function setTypesForLevel(level, isChecked) {
   }
 
   function computeMatches() {
-  const selections = readSelections();
-  // Build the full result (your app’s existing logic usually lives here).
-  // Keep your existing merge/de-dupe logic if you have it; here’s a safe default:
-  let result = [];
+    const selections = readSelections();
+    let result = [];
 
-  for (const sel of selections) {
-    // sel = { level, type, pages[] } from your UI
-    let subset = data.filter(r =>
-      r.Level === sel.level &&
-      r.Type === sel.type &&
-      (!sel.pages || sel.pages.length === 0 || sel.pages.includes(r.Page))
-    );
-    result = result.concat(subset);
+    // 1) Build from normal Level/Type/Page selections
+    for (const sel of selections) {
+      let subset = data.filter(r =>
+        r.Level === sel.level &&
+        r.Type  === sel.type &&
+        (!sel.pages || sel.pages.length === 0 || sel.pages.includes(r.Page))
+      );
+      result = result.concat(subset);
+    }
+
+    // 2) Optionally add questions from Question #'s (ID list) as an extra source
+    let idsFromInput = new Set();
+    if (levelIds && levelIds.checked) {
+      idsFromInput = parseIdList();
+      if (idsFromInput.size) {
+        const fromIds = data.filter(r => {
+          const id = getRecordId(r);
+          return id != null && idsFromInput.has(String(id));
+        });
+        result = result.concat(fromIds);
+      }
+    }
+
+    // 3) De-dupe — prefer ID if available, else fallback on composite key
+    const seen = new Set();
+    result = result.filter(r => {
+      const id = getRecordId(r);
+      const key = (id != null)
+        ? `id:${String(id)}`
+        : `${r.Level}|${r.Type}|${r.Page}|${r.Question}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    // 4) Count toss-ups specifically (Competition requires at least one Toss-up)
+    const tossCount = result.filter(r => r.Type === "Toss-up").length;
+
+    if (matchCount) matchCount.textContent = `${result.length} matching questions`;
+
+    // 5) Gate the Start button
+    if (btnStart) {
+      const ok = (mode === "competition") ? (tossCount > 0) : (result.length > 0);
+      btnStart.disabled = !ok;
+    }
+    return result;
   }
 
-  // De-dupe by (Level, Type, Page, Question) if desired:
-  const seen = new Set();
-  result = result.filter(r => {
-    const key = `${r.Level}|${r.Type}|${r.Page}|${r.Question}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-
-  // Count toss-ups specifically (Competition requires at least one Toss-up)
-  const tossCount = result.filter(r => r.Type === "Toss-up").length;
-
-  if (matchCount) matchCount.textContent = `${result.length} matching questions`;
-
-  // Gate the Start button: Competition needs at least one Toss-up
-  if (btnStart) {
-    const ok = (mode === "competition") ? (tossCount > 0) : (result.length > 0);
-    btnStart.disabled = !ok;
-  }
-  return result;
-}
 
 
 // Toggle visual selected-state on labels when checkboxes change
@@ -306,7 +344,7 @@ function styleToggleFor(inputEl) {
 function initToggleSync() {
   const toggleInputs = [
     // Levels
-    levelNovice, levelJunior, levelSenior,
+    levelNovice, levelJunior, levelSenior, levelIds,
     // Novice
     noviceToss, noviceBonus,
     // Junior
@@ -314,6 +352,7 @@ function initToggleSync() {
     // Senior
     seniorToss, seniorBonus
   ].filter(Boolean);
+
 
   // Initial paint
   toggleInputs.forEach(styleToggleFor);
@@ -483,18 +522,19 @@ computeMatches();
   on(btnBackFilters, "click", () => { resetSession(); showScreen("filters"); });
 
   // Level checkboxes → show panels + recompute
-  [levelNovice, levelJunior, levelSenior].forEach(el => {
-  on(el, "change", () => {
-    updatePanelsVisibility();
+  [levelNovice, levelJunior, levelSenior, levelIds].forEach(el => {
+    on(el, "change", () => {
+      updatePanelsVisibility();
 
-    // Auto-toggle both Types for the level that changed
-    if (el === levelNovice)  setTypesForLevel("Novice",  !!levelNovice.checked);
-    if (el === levelJunior)  setTypesForLevel("Junior",  !!levelJunior.checked);
-    if (el === levelSenior)  setTypesForLevel("Senior",  !!levelSenior.checked);
+      // Auto-toggle both Types for the level that changed (not for Question #'s)
+      if (el === levelNovice)  setTypesForLevel("Novice",  !!levelNovice.checked);
+      if (el === levelJunior)  setTypesForLevel("Junior",  !!levelJunior.checked);
+      if (el === levelSenior)  setTypesForLevel("Senior",  !!levelSenior.checked);
 
-    computeMatches();
+      computeMatches();
+    });
   });
-});
+
 
 
   // Subset checks + page inputs → recompute
