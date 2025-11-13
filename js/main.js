@@ -567,19 +567,12 @@ on(btnStart, "click", () => {
   showScreen("game");
 
   if (mode === "competition") {
+   
     // Build Toss-up and Bonus pools from current selections
-    const selections = readSelections();
-    tossPool = [];
-    bonusPool = [];
-    for (const sel of selections) {
-      let subset = data.filter(r =>
-        r.Level === sel.level &&
-        r.Type  === sel.type &&
-        (!sel.pages || sel.pages.length === 0 || sel.pages.includes(r.Page))
-      );
-      if (sel.type === "Toss-up") tossPool = tossPool.concat(subset);
-      if (sel.type === "Bonus")   bonusPool = bonusPool.concat(subset);
-    }
+    
+    tossPool  = matches.filter(r => r.Type === "Toss-up");
+    bonusPool = matches.filter(r => r.Type === "Bonus");
+
 
         // initialize competition state
     t1 = 0; t2 = 0;
