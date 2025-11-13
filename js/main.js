@@ -431,7 +431,7 @@ if (tossupTitle && bonusTitle) {
   
   if (compPhase === "tossup") {
     const q = nextTossUpQuestion();
-    if (!q) { Game.revealInstant(qBox, "No more Toss-up questions."); return; }
+    if (!q) { Game.revealInstant(qBox, "No Toss-up questions selected."); return; }
     renderQAToBoxes(q);
     // Controls: show comp controls, hide bonus controls
     if (compControls)  compControls.classList.remove("hidden");
