@@ -338,3 +338,36 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
   background: #111;
 }
 
+/* --- Question #'s toggle --- */
+.level-row .toggle-btn.toggle-ids {
+  margin-left: 12px;
+  background: #f97316; /* orange */
+  color: #fff;
+}
+.level-row .toggle-btn.toggle-ids.selected {
+  background: #ea580c;
+  color: #fff;
+}
+
+/* Question #'s panel textarea */
+#panel-ids textarea#id-list-input {
+  width: 100%;
+  min-height: 120px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+.subset-col.subset-full {
+  grid-column: 1 / -1; /* full width in subset-grid */
+}
+
+.subset-label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 4px;
+}
+
