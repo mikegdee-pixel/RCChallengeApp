@@ -341,13 +341,17 @@ button.link { background: transparent; color: #2f6fed; padding: 6px 0; }
 /* --- Question #'s toggle --- */
 .level-row .toggle-btn.toggle-ids {
   margin-left: 12px;
-  background: #f97316; /* orange */
-  color: #fff;
+  background: #fef3c7;           /* light amber */
+  color: #7c2d12;                /* dark amber text */
+  border: 1px solid #f97316;     /* orange outline */
 }
+
 .level-row .toggle-btn.toggle-ids.selected {
-  background: #ea580c;
+  background: #f97316;           /* solid orange when selected */
   color: #fff;
+  border-color: #ea580c;
 }
+
 
 /* Question #'s panel textarea */
 #panel-ids textarea#id-list-input {
