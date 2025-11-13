@@ -23,16 +23,22 @@
 <section id="screen-filters" class="screen">
   <h2>Choose Your Practice</h2>
 
-  <!-- A. Levels -->
+    <!-- A. Levels -->
   <div class="card">
     <label>SELECT YOUR LEVEL</label>
     <div class="level-row">
       <label class="toggle-btn"><input type="checkbox" id="level-novice" checked /> Novice</label>
       <label class="toggle-btn"><input type="checkbox" id="level-junior" /> Junior</label>
       <label class="toggle-btn"><input type="checkbox" id="level-senior" /> Senior</label>
-    </div>
 
+      <!-- NEW: Question #'s toggle (additive source) -->
+      <label class="toggle-btn toggle-ids">
+        <input type="checkbox" id="level-ids" />
+        Question #&#39;s
+      </label>
+    </div>
   </div>
+
 
   <!-- B. Subsets for each selected level -->
   <!-- Novice -->
@@ -97,6 +103,21 @@
       </div>
     </div>
   </div>
+
+    <!-- Question #'s (ID list) -->
+  <div class="card subset-panel" id="panel-ids">
+    <div class="subset-header">Question #&#39;s</div>
+    <div class="subset-grid">
+      <div class="subset-col subset-full">
+        <label for="id-list-input" class="subset-label">Paste Question IDs</label>
+        <div class="range-inline">
+          <textarea id="id-list-input" placeholder="Paste IDs from Wrong List (one per line or comma-separated)"></textarea>
+        </div>
+        <small class="muted">These questions will be added on top of your other filters (no duplicates).</small>
+      </div>
+    </div>
+  </div>
+
 
   <!-- C. Mode -->
   <div class="card">
